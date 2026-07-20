@@ -1,0 +1,16 @@
+could not detect version_main.therefore, we are assuming it is chrome 108 or higher
+=== Fetching homepage ===
+HOMEPAGE TITLE: 
+HOMEPAGE URL after load: http://www.gonsalvesliquors.com/
+HOMEPAGE length: 39
+
+=== Fetching prices.php ===
+PRICES TITLE: 
+PRICES URL after load: http://www.gonsalvesliquors.com/prices.php
+PRICES page_source length: 39
+PRICES page_source first 3000 chars:
+<html><head></head><body></body></html>
+
+=== Looking for PDF links/embeds anywhere ===
+
+DONE

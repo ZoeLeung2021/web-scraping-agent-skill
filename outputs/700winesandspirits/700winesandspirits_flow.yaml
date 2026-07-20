@@ -1,0 +1,57 @@
+id: 700winesandspirits_scraper_flow
+namespace: dev.scrapers
+description: |
+  700 Wines and Spirits (Bahamas domestic liquor retailer, operated by
+  Commonwealth Brewery Ltd / Heineken) ETL Pipeline.
+  Step 1 (Bronze): Headless Selenium scraper runs in Docker, uploads raw JSON to Databricks Unity Catalog Volume.
+  Step 2 (Silver): PySpark cleaning job runs on Databricks, enforces schema and writes to Delta.
+
+  DEPLOY TARGET: copy this file to
+  GTR_Pricing/kestra_flows/700winesandspirits_flow.yaml once the
+  scraper and cleaner are deployed there too.
+
+  NOTE: clean_700winesandspirits.py currently ships with Domestic_Tax left
+  null pending real research into the Bahamas' alcohol excise/import-duty
+  schedule and explicit user sign-off — see that file's module docstring.
+  Do not deploy silently assuming that's resolved.
+
+concurrency:
+  limit: 1
+  behavior: QUEUE
+
+tasks:
+  - id: run_700winesandspirits_scraper_bronze
+    type: io.kestra.plugin.scripts.python.Commands
+    description: "BRONZE: Headless scraper lands raw JSON into Databricks Volume."
+    runner: DOCKER
+    docker:
+      image: etl-scrapers:latest
+      pullPolicy: NEVER
+    env:
+      DATABRICKS_HOST: "{{ envs.databricks_host }}"
+      DATABRICKS_TOKEN: "{{ envs.databricks_token }}"
+    commands:
+      - python /app/700winesandspirits_scraper.py
+
+  - id: run_pyspark_silver
+    type: io.kestra.core.tasks.flows.Subflow
+    description: "SILVER: Routed through the shared dispatcher so only one Silver MERGE job runs against Databricks at a time across every site."
+    namespace: dev.scrapers
+    flowId: silver_clean_dispatcher
+    inputs:
+      script_name: clean_700winesandspirits
+    wait: true
+    transmitFailed: true
+
+errors:
+  - id: log_failure_alert
+    type: io.kestra.core.tasks.log.Log
+    message: "CRITICAL ⚠️ 700 Wines and Spirits (Bahamas) scraper ETL failed! Check execution logs for details."
+  - id: slack_failure_alert
+    type: io.kestra.plugin.notifications.slack.SlackIncomingWebhook
+    url: "{{ envs.slack_webhook_url }}"
+    payload: |
+      {
+        "channel": "#data-engineering-alerts",
+        "text": "URGENT ⚠️ 700 Wines and Spirits (Bahamas) ETL failed.\n• Failed step: {{ flow.id }}\n• Check Kestra UI logs for full error.\n\nIf Velocity Anomaly → New Execution to re-scrape.\nIf code error → fix script then Replay from failed task."
+      }

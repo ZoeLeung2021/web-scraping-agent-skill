@@ -1,0 +1,11 @@
+--- rows containing size token matching '0.05cl' ---
+  Pinkster Gin Mini Gift Set 0.05cl | case= 680.00 bottle= 68.00 | category= GIN
+--- rows containing size token matching '25lt' ---
+  Mineral Water .25lt | case= 256.00 bottle= 12.80 | category= SPARKLING WINES
+--- rows containing size token matching '3cl' ---
+  Glass 33cl | case= 160.05 bottle= 9.70 | category= SPARKLING WINES
+  Hennessy VS Cognac 3cl | case= 80.00 bottle= 8.00 | category= MINIATURES
+--- rows containing size token matching '1.14Lt' ---
+  Bacardi White 1.14Lt | case= 365.00 bottle= 73.00 | category= RUM
+--- rows containing size token matching '355ml' ---
+  Corona Extra Beer 355ml | case= 156.00 bottle= 39.00 | category= BEER

@@ -1,0 +1,65 @@
+id: milano_malpensa_boutique_scraper_flow
+namespace: dev.scrapers
+description: |
+  Milano Malpensa Boutique (S.E.A. S.p.A.'s duty-free "book online, pick up
+  at Malpensa Terminal 1" storefront) ETL Pipeline.
+  Step 1 (Bronze): Headless Selenium scraper runs in Docker, uploads raw JSON to Databricks Unity Catalog Volume.
+  Step 2 (Silver): PySpark cleaning job runs on Databricks, enforces schema and writes to Delta.
+
+  DEPLOY TARGET: copy this file to
+  GTR_Pricing/kestra_flows/milano_malpensa_boutique_flow.yaml once the
+  scraper and cleaner are deployed there too.
+
+  NOTE: each category's own H1 header badge (e.g. "Whiskey 183") is a
+  confirmed, real site-side overcount relative to the number of distinct
+  SKUs actually reachable via full pagination — investigated at length
+  during this build, not a scraper bug (see milano_malpensa_boutique_
+  scraper.py's module docstring and clean_milano_malpensa_boutique.py's
+  docstring). Per-run row counts will legitimately run lower than that
+  header figure; don't treat that gap as a pipeline failure.
+
+  NOTE: the scraper does a second pass (one extra page load per product)
+  to pull Size off each product detail page, since Size isn't present on
+  the category-listing JSON — this makes a full run noticeably slower
+  than a single-pass scraper across this site's ~700-product catalog.
+
+concurrency:
+  limit: 1
+  behavior: QUEUE
+
+tasks:
+  - id: run_milano_malpensa_boutique_scraper_bronze
+    type: io.kestra.plugin.scripts.python.Commands
+    description: "BRONZE: Headless scraper lands raw JSON into Databricks Volume."
+    runner: DOCKER
+    docker:
+      image: etl-scrapers:latest
+      pullPolicy: NEVER
+    env:
+      DATABRICKS_HOST: "{{ envs.databricks_host }}"
+      DATABRICKS_TOKEN: "{{ envs.databricks_token }}"
+    commands:
+      - python /app/milano_malpensa_boutique_scraper.py
+
+  - id: run_pyspark_silver
+    type: io.kestra.core.tasks.flows.Subflow
+    description: "SILVER: Routed through the shared dispatcher so only one Silver MERGE job runs against Databricks at a time across every site."
+    namespace: dev.scrapers
+    flowId: silver_clean_dispatcher
+    inputs:
+      script_name: clean_milano_malpensa_boutique
+    wait: true
+    transmitFailed: true
+
+errors:
+  - id: log_failure_alert
+    type: io.kestra.core.tasks.log.Log
+    message: "CRITICAL ⚠️ Milano Malpensa Boutique scraper ETL failed! Check execution logs for details."
+  - id: slack_failure_alert
+    type: io.kestra.plugin.notifications.slack.SlackIncomingWebhook
+    url: "{{ envs.slack_webhook_url }}"
+    payload: |
+      {
+        "channel": "#data-engineering-alerts",
+        "text": "URGENT ⚠️ Milano Malpensa Boutique ETL failed.\n• Failed step: {{ flow.id }}\n• Check Kestra UI logs for full error.\n\nIf Velocity Anomaly → New Execution to re-scrape.\nIf code error → fix script then Replay from failed task."
+      }

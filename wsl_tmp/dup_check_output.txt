@@ -1,0 +1,31 @@
+=== original-1lt (2x) ===
+  category='LIQUEURS' case=786.00 bottle=78.60
+  category='LIQUEURS' case=480.00 bottle=48.00
+=== tia-maria-70cl (2x) ===
+  category='LIQUEURS' case=534.61 bottle=53.46
+  category='LIQUEURS' case=700.00 bottle=70.00
+=== sancerre-2023-75cl (2x) ===
+  category='MOUTAI' case=487.50 bottle=97.50
+  category='DROUET FRERES' case=567.50 bottle=113.50
+=== chablis-2024-75cl (2x) ===
+  category='MOUTAI' case=910.00 bottle=91.00
+  category='CAMUS' case=1,160.00 bottle=116.00
+=== merlot-2022-75cl (2x) ===
+  category='Borvin Sacha Lichine' case=437.50 bottle=43.75
+  category='THOMAS HARDY' case=430.00 bottle=43.00
+=== chardonnay-2021-75cl (2x) ===
+  category='Borvin Sacha Lichine' case=475.00 bottle=47.50
+  category='Villa Wolf' case=542.20 bottle=54.22
+=== cotes-de-provence-aoc-2024-750ml (2x) ===
+  category='CHATEAUX OF BORDEAUX' case=665.00 bottle=133.00
+  category='CHATEAUX OF BORDEAUX' case=410.00 bottle=82.00
+=== moscato-75cl (2x) ===
+  category='VOGA' case=300.00 bottle=60.00
+  category='THOMAS HARDY' case=430.00 bottle=43.00
+=== pinot-grigio-75cl (2x) ===
+  category='VOGA' case=300.00 bottle=60.00
+  category='THOMAS HARDY' case=430.00 bottle=43.00
+=== pinot-grigio-2023-75cl (3x) ===
+  category='FOLONARI' case=410.50 bottle=41.05
+  category='SANTA MARGHERITA' case=625.00 bottle=62.50
+  category='TORRESELLA' case=215.00 bottle=43.00
