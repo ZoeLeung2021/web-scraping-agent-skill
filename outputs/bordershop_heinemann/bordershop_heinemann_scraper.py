@@ -146,6 +146,18 @@ LOCATIONS = {
     "Germany": ["Puttgarden", "Rostock"],
 }
 
+# Channel-naming per this project's standing convention (see
+# feedback_channel_naming_airports memory): both are real Scandlines car-
+# ferry terminal towns to Denmark/Sweden, not airports or road border
+# crossings, so this uses the established "Ferry - <name>" format already
+# in GTR_Pricing's Aelia_cleaner.py CHANNEL_MAP (e.g. "Ferry - Inishmore")
+# rather than the raw location slug. Kept separate from `self.location`
+# (used for URL-building below) since the raw slug is still needed there.
+CHANNEL_DISPLAY_NAME = {
+    "Puttgarden": "Ferry - Puttgarden",
+    "Rostock": "Ferry - Rostock",
+}
+
 # (url_path, category_code) for the 14 real leaf alcohol categories.
 # Deliberately excludes the "Vin" (scacat_5201) intermediate parent and the
 # Oel/Vin & Cider/Spiritus top-level parents — see module docstring's
@@ -303,7 +315,7 @@ if __name__ == "__main__":
                     scraper.run_all()
                     for item in scraper.product_dicts:
                         item["Country"] = country
-                        item["Channel"] = channel
+                        item["Channel"] = CHANNEL_DISPLAY_NAME.get(channel, channel)
                         item["Scraped_At"] = datetime.now(timezone.utc).isoformat()
                     all_data.extend(scraper.product_dicts)
                     scraped_count = len(scraper.product_dicts)

@@ -30,8 +30,16 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     This is a per-SKU data gap, not a language-switch step this scraper can
     fix — the paired cleaner applies ai_translate unconditionally as a
     safety net instead (harmless no-op on text already in English).
-  - Country has ONE online catalog (Channel = "N/A") — no evidence of a
-    multi-location split was found for this site.
+  - Country has ONE online catalog, no multi-location split found for
+    this site — but it genuinely combines both downtown AND airport duty-
+    free channels (the homepage's own title text reads "市内免税店丨机场
+    免税店" — "downtown duty-free store | airport duty-free store"),
+    confirmed live 2026-07-21, so a single-airport IATA-code Channel
+    would misrepresent it. Channel = "Cambodia Duty Free" instead,
+    matching GTR_Pricing's real "<Country> Duty Free" convention for
+    combined-channel/no-split national retailers (e.g.
+    big_five_south_africa_scraper.py -> "South Africa Duty Free") — see
+    feedback_channel_naming_airports memory.
   - GTR-exclusive signal: CONFIRMED (via the Hong Kong sibling site, whose
     real product data included "...Travellers' Exclusive Collection...")
     that this platform signals exclusivity directly in the product title
@@ -63,7 +71,7 @@ CATEGORIES = {
 }
 
 LOCATIONS = {
-    "Cambodia": ["N/A"],
+    "Cambodia": ["Cambodia Duty Free"],
 }
 
 

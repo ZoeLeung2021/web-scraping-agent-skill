@@ -28,7 +28,12 @@ below was re-checked against the actual page):
     price variation found on the listing page (only a stock-status line
     per card, e.g. "Click&Collect - på lager" / "På lager i de fleste
     butikker" — stock availability text, not a price difference); modeled
-    as a single "N/A" channel, same as Calle.
+    as a single combined channel, same as Calle. Channel fixed 2026-07-21
+    to "Border - Germany: Fleggaard" — same reasoning as Calle (see that
+    scraper's docstring): GTR_Pricing's real convention is "Border -
+    <State/Province>: <Crossing Name>", but this retailer spans multiple
+    towns with no single named crossing, so Country + brand name is used
+    instead of State + crossing name.
   - Only the da-dk (Danish, DKK) locale is scraped here — an sv-se
     (Swedish) locale also exists per robots.txt checkout paths, mirroring
     Calle's da-dk/sv-se split, and is deliberately out of scope for this
@@ -121,7 +126,7 @@ LOCALE = "da-dk"
 
 # One unified catalog across all German branches — see module docstring.
 LOCATIONS = {
-    "Germany": ["N/A"],
+    "Germany": ["Border - Germany: Fleggaard"],
 }
 
 # cider lives inside oel as a subcategory on this site — no standalone

@@ -10,7 +10,12 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     (`dmddf` = DM Diplomat Duty Free), a duty-free operation serving the
     diplomatic community in Korea (`"addressCountry": "KR"` in the page's
     embedded schema.org JSON-LD). Market = "GTR", Country = "DF South Korea".
-    Single shop, no multi-location split found.
+    Single shop, no multi-location split found. Channel fixed 2026-07-21
+    to "South Korea Diplomatic Services" (was "N/A") — GTR_Pricing's real
+    diplomatic-shop convention is "<Region> Diplomatic Services" (Peter
+    Justesen/Denmark uses "Europe Diplomatic Services"); user chose
+    country-specific naming over broad-region for this project's
+    diplomatic builds. See feedback_channel_naming_airports memory.
   - Platform is imweb (a Korean website-builder/e-commerce CMS,
     `cdn.imweb.me`), not WooCommerce/Shopify.
   - Alcohol taxonomy: top-level "LIQUOR" nav item, with these 13 real
@@ -71,7 +76,7 @@ BASE_URL = "https://www.dmddf.com"
 
 # Single shop, no location split found.
 LOCATIONS = {
-    "South Korea": ["N/A"],
+    "South Korea": ["South Korea Diplomatic Services"],
 }
 
 # 13 real alcohol subcategory slugs confirmed via the site's own nav — see

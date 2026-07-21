@@ -14,7 +14,12 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     center."), not a normal domestic retailer despite selling in a single
     country. Market = "GTR", Country = "DF Serbia".
   - Single location — no multi-country/multi-branch split found or implied
-    anywhere on the site.
+    anywhere on the site. Channel fixed 2026-07-21 to "Serbia Diplomatic
+    Services" (was "N/A") — GTR_Pricing's real diplomatic-shop convention
+    is "<Region> Diplomatic Services" (Peter Justesen/Denmark uses
+    "Europe Diplomatic Services"); user chose country-specific naming
+    over broad-region for this project's diplomatic builds. See
+    feedback_channel_naming_airports memory.
   - WordPress + WooCommerce (Woodmart theme). Top-level shop categories:
     beverages, cigarettes, cigars-cigarillos, luggage, perfumes,
     special-offer, sunglasses, watches — "beverages" is the sole alcohol
@@ -75,7 +80,7 @@ BASE_URL = "https://diplomaticshop.rs"
 
 # Single physical/online shop, no location split found.
 LOCATIONS = {
-    "Serbia": ["N/A"],
+    "Serbia": ["Serbia Diplomatic Services"],
 }
 
 # "beverages" is the sole alcohol top-level category — see module docstring.

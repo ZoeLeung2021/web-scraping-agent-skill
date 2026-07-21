@@ -159,9 +159,14 @@ RETAILER_SLUG = "milano_malpensa_boutique"
 BASE_URL = "https://milanomalpensaboutique.com"
 
 # Single airport, single terminal, single pickup point ("Malpensa Terminal
-# 1") — no multi-location split found anywhere on the site.
+# 1") — no multi-location split found anywhere on the site. Channel below
+# uses this project's standing airport-naming convention (full official
+# name + IATA code, matching GTR_Pricing's own "Milan Malpensa
+# International Airport (MXP)" string used for Dufry Europe at this same
+# airport) rather than the site's own "Terminal 1" framing — the terminal
+# detail is real but not part of the established Channel format.
 LOCATIONS = {
-    "Italy": ["Malpensa Terminal 1"],
+    "Italy": ["Milan Malpensa International Airport (MXP)"],
 }
 
 # The 9 real, non-overlapping leaf nav categories under the "alcolici"

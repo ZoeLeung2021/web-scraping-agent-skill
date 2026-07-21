@@ -22,9 +22,16 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     in, not the customer nationality the copy targets), Country =
     "Germany" here, "DF Germany" after the cleaner's GTR prefix. One
     unified catalog across all branches — no evidence found of per-branch
-    price variation, modeled as a single "N/A" channel like other
+    price variation, modeled as a single combined channel like other
     single-catalog multi-shop retailers in this repo (e.g. Silk Road Duty
-    Free).
+    Free). Channel fixed 2026-07-21 to "Border - Germany: Calle" —
+    GTR_Pricing's real land-border convention is "Border - <State/
+    Province>: <Crossing Name>" (dutyfreeamericas_scraper.py's legacy
+    Locations dict), but this retailer spans 7 towns with no single named
+    crossing to point to, so Country substitutes for State and the brand
+    name ("Calle") substitutes for a specific crossing name — a reasoned
+    extension of the pattern, not an exact precedent match. See
+    feedback_channel_naming_airports memory.
   - Only the da-dk (Danish, DKK) locale is scraped here — the site also
     has an sv-se (Swedish, EUR-priced) locale for the same physical
     catalog, confirmed to exist but deliberately out of scope for this
@@ -96,7 +103,7 @@ LOCALE = "da-dk"
 
 # One unified catalog across all German branches — see module docstring.
 LOCATIONS = {
-    "Germany": ["N/A"],
+    "Germany": ["Border - Germany: Calle"],
 }
 
 CATEGORIES = ["spiritus", "vin", "oel", "cider"]

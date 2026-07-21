@@ -10,7 +10,12 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     Site | Narita Airport" — an airport duty-free pre-order platform
     (order online, pick up post-security at Narita before departure), no
     ambiguity. Market = "GTR", Country = "DF Japan".
-  - Single location (Narita Airport), single currency (JPY).
+  - Single location (Narita Airport), single currency (JPY). Channel
+    fixed 2026-07-21 per this project's standing airport-naming rule
+    (see feedback_channel_naming_airports memory): was "N/A" -> "Tokyo
+    Narita International Airport (NRT)", matching this exact string
+    already used in GTR_Pricing's jal_duty_free_scraper.py and
+    Japan_Duty_Free_scraper.py for the same airport.
   - `cat=120` is the master "Liquor" category and already lists every
     alcohol subcategory's products combined (Whisky, Wine, Champagne,
     Gin, Vodka, Sake, Shochu, Chinese liquor, etc. all appear together) —
@@ -85,7 +90,7 @@ LIQUOR_CAT = "120"
 
 # Single airport shop, no location split found.
 LOCATIONS = {
-    "Japan": ["N/A"],
+    "Japan": ["Tokyo Narita International Airport (NRT)"],
 }
 
 # Master liquor category covers every alcohol subcategory combined — see

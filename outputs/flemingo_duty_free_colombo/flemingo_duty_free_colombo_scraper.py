@@ -77,7 +77,7 @@ RETAILER_SLUG = "flemingo_duty_free_colombo"
 BASE_URL = "https://www.flemingodutyfreecolombo.com"
 
 LOCATIONS = {
-    "Sri Lanka": ["N/A"],
+    "Sri Lanka": ["Bandaranaike International Airport (CMB)"],
 }
 CATEGORIES = ["wines-spirits"]
 

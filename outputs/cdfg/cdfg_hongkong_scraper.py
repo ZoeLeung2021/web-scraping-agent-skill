@@ -6,6 +6,12 @@ DEPLOY TARGET: copy this file to GTR_Pricing/scrapers/cdfg_hongkong_scraper.py
 once validated.
 
 CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
+  - Channel confirmed 2026-07-21: the site's own page header literally
+    reads "DUTY ZERO by cdf - Airport Pickup" — Hong Kong has only one
+    international airport, so Channel is set to "Hong Kong International
+    Airport (HKG)", matching this exact string already used in
+    GTR_Pricing's HK_Airport_shop_cleaner.py and Dufry_Asia_cleaner.py
+    CHANNEL_MAP for the same airport.
   - Same corporate family/platform as cdfg_cambodia_scraper.py (a Vue/Nuxt
     SPA) — this site's own region switcher on the Cambodia site lists
     "DUTY ZERO" as the Hong Kong sibling shop, and this site shares the
@@ -68,7 +74,7 @@ CATEGORIES = {
 }
 
 LOCATIONS = {
-    "Hong Kong": ["N/A"],
+    "Hong Kong": ["Hong Kong International Airport (HKG)"],
 }
 
 

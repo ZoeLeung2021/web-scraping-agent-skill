@@ -15,7 +15,14 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     appears to run per-city/country storefronts for a global diplomatic
     client base), so Country = "Dubai" here (not "United Arab Emirates"
     generically) — same precedent as GMP's "Abu Dhabi" (emirate/city-
-    specific service area, not the whole country).
+    specific service area, not the whole country). Channel fixed
+    2026-07-21 to "Dubai Diplomatic Services" (was "N/A") — GTR_Pricing's
+    real diplomatic-shop convention is "<Region> Diplomatic Services"
+    (Peter Justesen/Denmark uses "Europe Diplomatic Services"); user
+    chose country/city-specific naming over broad-region for this
+    project's diplomatic builds, and "Dubai" matches this retailer's own
+    established Country-field granularity above. See
+    feedback_channel_naming_airports memory.
   - Platform is Magento 2 (`data-role="priceBox"`, `data-product-id`,
     Knockout.js `data-bind` attributes, `.html`-suffixed category/product
     URLs) — same platform family as Garrafeira Nacional Portugal.
@@ -103,7 +110,7 @@ RETAILER_SLUG = "ids_dubai"
 BASE_URL = "https://www.i-d-s.com/dubai"
 
 LOCATIONS = {
-    "Dubai": ["N/A"],
+    "Dubai": ["Dubai Diplomatic Services"],
 }
 
 WINE_CATEGORIES = [

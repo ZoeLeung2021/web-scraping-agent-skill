@@ -37,9 +37,18 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     volume (e.g. "1L") from strings shaped like this.
   - The retailer operates three physical shops (Tbilisi, Batumi, Poti) but
     sells through one unified online catalog with no per-shop pricing or
-    URLs visible — modeled as a single "N/A" channel rather than three
-    separate scrape passes, consistent with how other single-catalog
-    retailers in this repo (e.g. Cloud 9 Laos) are modeled.
+    URLs visible — modeled as one combined scrape pass rather than three
+    separate ones, consistent with how other single-catalog retailers in
+    this repo (e.g. Cloud 9 Laos) are modeled. Channel is "Georgia Duty
+    Free" (updated 2026-07-21 per this project's standing airport/channel
+    naming rule — see feedback_channel_naming_airports memory), matching
+    GTR_Pricing's real "<Country> Duty Free" convention used for other
+    combined-channel/no-split national retailers (e.g.
+    big_five_south_africa_scraper.py -> "South Africa Duty Free",
+    romania_best_value_scraper.py -> "Romania Duty Free") — Poti is a
+    seaport, not an airport, so the airport-specific IATA-code format
+    doesn't apply here; this is a genuinely different, non-airport
+    convention for combined multi-location retailers.
 """
 
 import os
@@ -58,7 +67,7 @@ BASE_URL = "https://dutyfree.ge"
 
 # Single unified online catalog — no per-shop pricing/URL split found.
 LOCATIONS = {
-    "Georgia": ["N/A"],
+    "Georgia": ["Georgia Duty Free"],
 }
 
 # Already alcohol-only category URLs — no scoping needed beyond this list.

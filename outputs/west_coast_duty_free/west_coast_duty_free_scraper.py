@@ -35,7 +35,11 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     - 176th Street, Surrey, BC, Canada V3Z 9S4, phone 604-538-3222 — on the
     Pacific Highway border crossing (Highway 15/99), the Canadian side of
     the Surrey, BC <-> Blaine, WA (Peace Arch/Pacific Highway) crossing
-    into the United States.
+    into the United States. Channel fixed 2026-07-21 to "Border - British
+    Columbia: Pacific Highway", following GTR_Pricing's real "Border -
+    <State/Province>: <Crossing Name>" convention (found in
+    dutyfreeamericas_scraper.py's legacy Locations dict) rather than
+    "N/A" — see feedback_channel_naming_airports memory.
   - Genuinely confirmed GTR via the site's own copy: FAQ states "'Duty
     Free' refers to items that can be purchased when crossing national
     borders... Duty free items are for export only and must be taken out
@@ -122,7 +126,7 @@ BASE_URL = "https://westcoastdutyfree.com"
 
 # Single physical shop, single catalog — see module docstring.
 LOCATIONS = {
-    "Canada": ["N/A"],
+    "Canada": ["Border - British Columbia: Pacific Highway"],
 }
 
 # Single flat liquor listing page — see module docstring for why this is

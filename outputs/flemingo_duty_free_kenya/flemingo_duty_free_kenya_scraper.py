@@ -21,7 +21,13 @@ these are 3 separate scraper files, not one combined script.
 CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
   - GTR retailer: site title is "Alcohol - FLEMINGO DUTY FREE KENYA" — an
     airport duty-free operator. Market = "GTR", Country = "DF Kenya".
-    Single location, no branch split found.
+    Single location, no branch split found. Channel confirmed 2026-07-21
+    via a live page-text check: the site references "TERMINAL 1B GATE 12"
+    — Terminal 1B is part of Nairobi's Jomo Kenyatta International
+    Airport, so Channel is set to "Nairobi Jomo Kenyatta International
+    Airport (NBO)", matching this exact string already used in
+    GTR_Pricing's Dufry_Africa_cleaner.py CHANNEL_MAP for the same
+    airport.
   - Platform is WordPress + WooCommerce, Woodmart theme — the EXACT same
     theme already used by Diplomatic Shop (Serbia), built earlier this
     session. Product card markup is structurally identical:
@@ -63,7 +69,7 @@ RETAILER_SLUG = "flemingo_duty_free_kenya"
 BASE_URL = "https://flemingodutyfree.ke"
 
 LOCATIONS = {
-    "Kenya": ["N/A"],
+    "Kenya": ["Nairobi Jomo Kenyatta International Airport (NBO)"],
 }
 CATEGORIES = ["alcohol"]
 

@@ -13,7 +13,12 @@ CONFIRMED against the live rendered DOM (headless Chrome, real page_source):
     the Rainbow Bridge. The /can-i-shop FAQ page states outright "Can I
     shop duty free? Yes you can!" and walks through Canadian- and
     American-traveler duty allowances for crossing into the USA — this is
-    a real land-border duty-free shop, same template as the Calle/
+    a real land-border duty-free shop. Channel fixed 2026-07-21 to
+    "Border - Ontario: Rainbow Bridge", following GTR_Pricing's real
+    "Border - <State/Province>: <Crossing Name>" convention (found in
+    dutyfreeamericas_scraper.py's legacy Locations dict, e.g. "Border -
+    Washington: Blaine") rather than "N/A" — see
+    feedback_channel_naming_airports memory. Same template as the Calle/
     Fleggaard bordershop builds, just the reverse direction (Canada ->
     USA instead of Denmark -> Germany). Market = "GTR". Country =
     "Canada" (-> "DF Canada" after the cleaner's GTR prefix).
@@ -116,7 +121,7 @@ BASE_URL = "https://niagaradutyfree.com"
 
 # Single physical shop, single catalog — see module docstring.
 LOCATIONS = {
-    "Canada": ["N/A"],
+    "Canada": ["Border - Ontario: Rainbow Bridge"],
 }
 
 # Leaf (non-overlapping) alcohol categories only — see module docstring
