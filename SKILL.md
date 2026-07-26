@@ -60,8 +60,24 @@ The template already handles a few common gaps in the raw scrape, so you shouldn
 - **No dedicated `Size` field** — falls back to pulling a size-looking substring (`"750ml"`, `"70cl"`) out of `Brandline`/the product title before normalizing to cl. Only extend the regex if this site's size format isn't covered.
 - **No explicit product ID** — falls back to pulling a run of digits out of `Product_link` before resorting to the full link as the `ID`. Only adjust this if the site's ID is a non-numeric slug instead.
 - **Site couldn't be gotten into English at scrape time** — uncomment the `ai_translate(Brand, 'en')` / `ai_translate(Brandline, 'en')` calls (Databricks' built-in, on-cluster translation — see `clean_hyundai_duty_free_korea.py`). Only use this as a last resort after step 3's options, and keep it positioned **after** Size has already been extracted from `Brandline` — translating first can turn a recognizable `"750ml"` into text the size regex no longer matches.
+- **Only one of `Strike_Price`/`Price_Discounted` came back populated** — immediately after parsing both (before anything else touches them), backfill each from the other when exactly one is null:
+  ```python
+  df = df.withColumn(
+      "Strike_Price",
+      when(col("Strike_Price").isNull() & col("Price_Discounted").isNotNull(), col("Price_Discounted"))
+      .otherwise(col("Strike_Price")),
+  )
+  df = df.withColumn(
+      "Price_Discounted",
+      when(col("Price_Discounted").isNull() & col("Strike_Price").isNotNull(), col("Strike_Price"))
+      .otherwise(col("Price_Discounted")),
+  )
+  ```
+  Write this into every new cleaner from the start — real, found 2026-07-23: every cleaner in this project parsed the two price fields fully independently, so a per-field try/except failure on just one of them in the scraper (a real, common failure mode — every scraper wraps each field in its own try/except precisely so one bad field doesn't kill the row) shipped that field null in Silver even though its sibling had a perfectly good price that should have applied to both. A genuine discount (both already populated) or a genuinely priceless row (both null, correctly destined for the DLQ) are both left untouched by this.
 
 **Always** convert currency via the shared `ExchangeRate_cleaning()` utility (`from ExRate_Cleaning_fx import ExchangeRate_cleaning`) rather than writing new conversion logic — every retailer's cleaner uses this same function against the shared IWSR exchange-rate reference file. Skip it only if the site's prices are already in the reporting currency (e.g. Singapore Changi skips it because SGD is the reporting currency for that market — note that exception in the cleaner if it applies here).
+
+**Ordering bug to avoid (real, found 2026-07-23 — every GTR cleaner in this project had this backwards until then):** if `Market = "GTR"`, add the `"DF "` prefix to `Country` **after** the `ExchangeRate_cleaning()` call, never before. That function joins on `Country` against the reference file's plain (unprefixed) country names — prefix it first and the join silently fails to match, so `IWSR Currency`/`Local Currency` come back null, the conversion mask never fires, and prices ship unconverted with no error. Correct order inside `clean()`: `toPandas()` → `ExchangeRate_cleaning()` → `spark.createDataFrame()` → **then** apply the `"DF "` prefix → drop helper columns → DLQ split. See `references/schema.md`'s `Country` row for the full explanation.
 
 Volume anomaly detection (`check_volume_anomaly` from `volume_anomaly_detection.py`) is available but **not required** for every new cleaner — use your judgment on whether this retailer's data volume is unpredictable enough to warrant it; don't wire it in by default.
 

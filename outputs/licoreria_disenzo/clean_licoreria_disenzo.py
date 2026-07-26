@@ -188,6 +188,22 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
 
     df = df.withColumn("Strike_Price", _fix_price(col("Strike Price")))
     df = df.withColumn("Price_Discounted", _fix_price(col("Price Discounted")))
+    # Real single-price sites sometimes only populate one of these two
+    # raw fields (a parsing edge case, not a genuine second price) -- back-
+    # fill so neither ships null when a perfectly good price exists in its
+    # sibling field. A genuine discount (both already populated) or a
+    # genuinely priceless row (both null, correctly destined for the DLQ)
+    # are both left untouched by this.
+    df = df.withColumn(
+        "Strike_Price",
+        when(col("Strike_Price").isNull() & col("Price_Discounted").isNotNull(), col("Price_Discounted"))
+        .otherwise(col("Strike_Price")),
+    )
+    df = df.withColumn(
+        "Price_Discounted",
+        when(col("Price_Discounted").isNull() & col("Strike_Price").isNotNull(), col("Strike_Price"))
+        .otherwise(col("Price_Discounted")),
+    )
 
     # No dedicated Size field on the listing card - always falls back to
     # the title regex.

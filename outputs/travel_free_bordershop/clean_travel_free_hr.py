@@ -98,6 +98,22 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
 
     df = df.withColumn("Strike_Price", _fix_price(col("Strike Price")))
     df = df.withColumn("Price_Discounted", _fix_price(col("Price Discounted")))
+    # Real single-price sites sometimes only populate one of these two
+    # raw fields (a parsing edge case, not a genuine second price) -- back-
+    # fill so neither ships null when a perfectly good price exists in its
+    # sibling field. A genuine discount (both already populated) or a
+    # genuinely priceless row (both null, correctly destined for the DLQ)
+    # are both left untouched by this.
+    df = df.withColumn(
+        "Strike_Price",
+        when(col("Strike_Price").isNull() & col("Price_Discounted").isNotNull(), col("Price_Discounted"))
+        .otherwise(col("Strike_Price")),
+    )
+    df = df.withColumn(
+        "Price_Discounted",
+        when(col("Price_Discounted").isNull() & col("Strike_Price").isNotNull(), col("Strike_Price"))
+        .otherwise(col("Price_Discounted")),
+    )
 
     size_or_fallback = when(
         col("Size").isNotNull() & (col("Size") != ""), col("Size")
@@ -119,10 +135,6 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
     df = df.withColumn("Market", lit(MARKET))
     df = df.withColumn("Retailer", lit(RETAILER))
     df = df.withColumn("Channel", _map_channel_label(col("Channel")))
-    # GTR retailer — prefix Country "DF " (e.g. "DF Croatia") to distinguish
-    # duty-free pricing from a domestic entry for the same country.
-    if MARKET == "GTR":
-        df = df.withColumn("Country", concat(lit("DF "), col("Country")))
     df = df.withColumn("Currency", lit(LOCAL_CURRENCY))
     df = df.withColumn("Domestic_Tax", lit(None).cast(StringType()))
 
@@ -144,6 +156,10 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
     if not pdf.empty:
         pdf = ExchangeRate_cleaning(pdf, EXRATE_CSV_PATH, "Strike_Price", "Price_Discounted")
         df = spark.createDataFrame(pdf)
+    # GTR retailer — prefix Country "DF " (e.g. "DF Croatia") to distinguish
+    # duty-free pricing from a domestic entry for the same country.
+    if MARKET == "GTR":
+        df = df.withColumn("Country", concat(lit("DF "), col("Country")))
 
     df = df.drop("Strike Price", "Price Discounted", "ID_raw")
 
