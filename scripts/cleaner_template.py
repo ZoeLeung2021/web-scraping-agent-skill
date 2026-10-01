@@ -172,13 +172,8 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
     # scraper tags every row with these, even for a single-location
     # retailer) rather than hardcoded here — this is what lets a retailer's
     # cleaner handle multiple countries/airports without special-casing.
-    # GTR retailers get a "DF <Country>" prefix (e.g. "DF Czech Republic")
-    # to distinguish duty-free pricing from a domestic entry for the same
-    # country in the exchange-rate reference file — matches the convention
-    # already used elsewhere in this pipeline (e.g. "DF Andorra"). Domestic
-    # retailers keep the plain country name.
-    if MARKET == "GTR":
-        df = df.withColumn("Country", concat(lit("DF "), col("Country")))
+    # Country stays the PLAIN country name here: the "DF " prefix for GTR
+    # retailers is added after the FX call below, never before.
     df = df.withColumn("Channel", _map_channel_label(col("Channel")))
 
     # TODO: if this site's prices are already in the reporting currency for
@@ -227,6 +222,16 @@ def clean(spark, bronze_path: str, silver_table: str = SILVER_TABLE):
     if not pdf.empty:
         pdf = ExchangeRate_cleaning(pdf, EXRATE_CSV_PATH, "Strike_Price", "Price_Discounted")
         df = spark.createDataFrame(pdf)
+
+    # GTR retailers get a "DF <Country>" prefix (e.g. "DF Czech Republic") to
+    # distinguish duty-free pricing from a domestic entry for the same
+    # country. Domestic retailers keep the plain country name. This MUST come
+    # AFTER ExchangeRate_cleaning(): that function joins on the plain Country
+    # name, and the reference file has no "DF "-prefixed rows. Prefixing first
+    # makes the join silently miss, so prices ship unconverted with no error.
+    # See references/schema.md's Country row.
+    if MARKET == "GTR":
+        df = df.withColumn("Country", concat(lit("DF "), col("Country")))
 
     df = df.drop("Strike Price", "Price Discounted", "ID_raw")
 
