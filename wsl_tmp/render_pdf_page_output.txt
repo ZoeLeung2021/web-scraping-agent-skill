@@ -1,2 +1,0 @@
-saved /mnt/c/Users/ZoeLiang/web-scraping-agent-skill/wsl_tmp/gll_page_1.png
-saved /mnt/c/Users/ZoeLiang/web-scraping-agent-skill/wsl_tmp/gll_page_2.png
